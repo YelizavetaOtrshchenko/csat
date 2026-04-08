@@ -1,12 +1,154 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Page Title</title>
+  <meta charset="UTF-8">
+  <title>Contact Form for Jira</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .form-box {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      width: 320px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      text-align: center;
+    }
+
+    .form-box h2 {
+      margin: 0;
+    }
+
+    input, textarea {
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      width: 100%;
+      box-sizing: border-box;
+      transition: 0.2s;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #667eea;
+      outline: none;
+    }
+
+    button {
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #667eea;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #5a67d8;
+    }
+
+    .success {
+      display: none;
+      color: green;
+      font-size: 14px;
+    }
+    .rating {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.rating span {
+  color: #ccc; /* сірий за замовчуванням */
+  transition: color 0.2s;
+}
+
+.rating span.hover,
+.rating span.selected {
+  color: #FFD700; /* жовтий */
+}
+  </style>
 </head>
 <body>
 
-<h1>This is a Heading</h1>
-<p>This is a paragraph.</p>
+  <form class="form-box" id="form">
+    <h2>Close Jira Issue</h2>
+
+    <!-- Jira поля -->
+    <input type="text" name="Company name" placeholder="Company name" required>
+    <input type="text" name="reporter" placeholder="Reporter" required>
+    <input type="text" name="issueKey" placeholder="Issue Key (e.g., TICKET-123)" required>
+    <textarea name="comment" placeholder="Comment for Jira" rows="3" required></textarea>
+<div class="rating">
+  <span data-value="1">&#9733;</span>
+  <span data-value="2">&#9733;</span>
+  <span data-value="3">&#9733;</span>
+  <span data-value="4">&#9733;</span>
+  <span data-value="5">&#9733;</span>
+</div>
+<input type="hidden" name="rating" id="ratingValue" value="">
+
+    <button type="submit">Send to Jira</button>
+    <div class="success" id="successMsg">✅ Sent successfully!</div>
+  </form>
+
+  <script>
+    const form = document.getElementById("form");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const data = new FormData(form);
+
+      // Якщо хочеш додати будь-які змінні динамічно з JS:
+      // data.set("issueKey", "TICKET-123");
+      // data.set("status", "Done");
+      // data.set("comment", "Issue closed via form");
+
+      await fetch("ТУТ_БУДЕ_WEBHOOK", {
+        method: "POST",
+        body: data
+      });
+
+      document.getElementById("successMsg").style.display = "block";
+      form.reset();
+    });
+
+const stars = document.querySelectorAll(".rating span");
+const ratingInput = document.getElementById("ratingValue");
+
+stars.forEach((star) => {
+  star.addEventListener("mouseover", () => {
+    const val = star.getAttribute("data-value");
+    stars.forEach((s) => s.classList.toggle("hover", s.getAttribute("data-value") <= val));
+  });
+
+  star.addEventListener("mouseout", () => {
+    stars.forEach((s) => s.classList.remove("hover"));
+  });
+
+  star.addEventListener("click", () => {
+    const val = star.getAttribute("data-value");
+    ratingInput.value = val;
+    stars.forEach((s) => s.classList.toggle("selected", s.getAttribute("data-value") <= val));
+  });
+});
+
+  </script>
 
 </body>
 </html>
